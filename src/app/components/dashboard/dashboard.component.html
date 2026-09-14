@@ -1,0 +1,237 @@
+<div class="shell" [class.collapsed]="sidebarCollapsed">
+
+  <!-- ============================== SIDEBAR ============================== -->
+  <aside class="sidebar" [class.mobile-open]="mobileNavOpen">
+    <div class="brand">
+      <span class="brand__mark">out<em>Flow</em></span>
+      <button class="icon-btn collapse-btn" type="button" (click)="toggleSidebar()" aria-label="Collapse sidebar">
+        <svg viewBox="0 0 24 24" width="18" height="18"><path d="M15 5 9 12l6 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+
+    <nav class="nav">
+      <div class="nav__indicator" [style.transform]="'translateY(' + (activeNavIndex * 52) + 'px)'"></div>
+      <button
+        *ngFor="let item of navItems; let i = index; trackBy: trackByLabel"
+        class="nav__item"
+        type="button"
+        [class.active]="i === activeNavIndex"
+        (click)="selectNav(i)">
+        <span class="nav__icon" [ngSwitch]="item.icon">
+          <svg *ngSwitchCase="'grid'" viewBox="0 0 24 24" width="20" height="20"><rect x="3" y="3" width="8" height="8" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><rect x="13" y="3" width="8" height="8" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><rect x="3" y="13" width="8" height="8" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><rect x="13" y="13" width="8" height="8" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+          <svg *ngSwitchCase="'swap'" viewBox="0 0 24 24" width="20" height="20"><path d="M4 8h13M13 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 16H7M11 12l-4 4 4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg *ngSwitchCase="'pie'" viewBox="0 0 24 24" width="20" height="20"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 3.5V12l7 3.7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <svg *ngSwitchCase="'target'" viewBox="0 0 24 24" width="20" height="20"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="0.9" fill="currentColor"/></svg>
+          <svg *ngSwitchCase="'doc'" viewBox="0 0 24 24" width="20" height="20"><path d="M6 3h9l4 4v14H6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 12h6M9 16h6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <svg *ngSwitchCase="'gear'" viewBox="0 0 24 24" width="20" height="20"><circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </span>
+        <span class="nav__label">{{ item.label }}</span>
+      </button>
+    </nav>
+
+    <div class="sidebar__user">
+      <span class="avatar avatar--sm">{{ userInitials }}</span>
+      <div class="sidebar__user-meta">
+        <span class="sidebar__user-name">{{ user?.name || 'User' }}</span>
+        <span class="sidebar__user-plan">{{ user?.currency || 'Account' }}</span>
+      </div>
+    </div>
+  </aside>
+
+  <div class="scrim" *ngIf="mobileNavOpen" (click)="toggleMobileNav()"></div>
+
+  <!-- ============================== MAIN ============================== -->
+  <div class="main">
+
+    <!-- ---------------------------- Topbar ---------------------------- -->
+    <header class="topbar">
+      <button class="icon-btn hamburger" type="button" (click)="toggleMobileNav()" aria-label="Open navigation">
+        <svg viewBox="0 0 24 24" width="20" height="20"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+
+      <div class="search">
+        <svg viewBox="0 0 24 24" width="16" height="16"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m20 20-3.6-3.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <input type="text" placeholder="Search transactions, categories…" aria-label="Search" />
+      </div>
+
+      <div class="topbar__right">
+        <button class="icon-btn" type="button" aria-label="Notifications">
+          <svg viewBox="0 0 24 24" width="19" height="19"><path d="M6 9a6 6 0 1 1 12 0c0 4 1.5 5.5 1.5 5.5H4.5S6 13 6 9Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9.5 17a2.5 2.5 0 0 0 5 0" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>
+          <span class="dot"></span>
+        </button>
+
+        <div class="profile" (click)="$event.stopPropagation()">
+          <button class="profile__trigger" type="button" (click)="toggleProfileMenu($event)">
+            <span class="hi">Hi, {{ user?.name || 'User' }}</span>
+            <span class="avatar avatar--sm">{{ userInitials }}</span>
+          </button>
+
+          <div class="dropdown" *ngIf="profileMenuOpen">
+            <div class="dropdown__header">
+              <span class="avatar">{{ userInitials }}</span>
+              <div>
+                <div class="dropdown__name">{{ user?.name || 'User' }}</div>
+                <div class="dropdown__email">{{ user?.email || '' }}</div>
+              </div>
+            </div>
+            <button class="dropdown__item" type="button">Profile</button>
+            <button class="dropdown__item" type="button">Account settings</button>
+            <button class="dropdown__item dropdown__item--danger" type="button">Log out</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ---------------------------- Content ---------------------------- -->
+    <main class="content">
+
+      <div class="grid">
+
+        <!-- Hero balance card -->
+        <section class="card hero">
+          <div class="hero__top">
+            <div>
+              <span class="eyebrow-plain">Total balance</span>
+              <div class="hero__balance">₹{{ displayBalance | number:'1.0-0' }}</div>
+            </div>
+
+            <div class="month-picker" (click)="$event.stopPropagation()">
+              <button class="chip" type="button" (click)="toggleMonthPicker($event)">
+                {{ selectedMonth }}
+                <svg viewBox="0 0 24 24" width="14" height="14"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <div class="month-picker__panel" *ngIf="monthPickerOpen">
+                <button *ngFor="let m of months" type="button" [class.active]="m === selectedMonth" (click)="pickMonth(m)">{{ m }}</button>
+              </div>
+            </div>
+          </div>
+
+          <svg class="hero__flow" viewBox="0 0 300 96" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="flowFill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#0F6E5C" stop-opacity="0.22"/>
+                <stop offset="100%" stop-color="#0F6E5C" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <path [attr.d]="flowAreaPath" fill="url(#flowFill)" class="flow-area"></path>
+            <path [attr.d]="flowLinePath" fill="none" class="flow-line"></path>
+            <circle cx="300" cy="10" r="4" class="flow-dot"></circle>
+          </svg>
+
+          <div class="hero__stats">
+            <div class="hero__stat">
+              <span class="hero__stat-icon hero__stat-icon--in">↓</span>
+              <div>
+                <span class="hero__stat-label">Income</span>
+                <span class="hero__stat-value">₹{{ displayIncome | number:'1.0-0' }}</span>
+              </div>
+            </div>
+            <div class="hero__stat">
+              <span class="hero__stat-icon hero__stat-icon--out">↑</span>
+              <div>
+                <span class="hero__stat-label">Expenses</span>
+                <span class="hero__stat-value">₹{{ displayExpense | number:'1.0-0' }}</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Savings rate -->
+        <section class="card stat-card stat-card--accent">
+          <span class="eyebrow-plain">Savings rate</span>
+          <div class="stat-card__value">{{ savingsRate }}%</div>
+          <p class="stat-card__note">Of income kept this month — steady rise from last month.</p>
+        </section>
+
+        <!-- Budget left -->
+        <section class="card stat-card">
+          <span class="eyebrow-plain">Budget remaining</span>
+          <div class="stat-card__value">₹{{ 13500 | number:'1.0-0' }}</div>
+          <p class="stat-card__note">Across all categories, through {{ selectedMonth }} 30.</p>
+        </section>
+
+        <!-- Spending by category -->
+        <section class="card category-card">
+          <h2 class="card__title">Spending by category</h2>
+
+          <div class="donut-row">
+            <div class="donut" [style.background]="donutGradient">
+              <div class="donut__hole">
+                <span class="donut__total">₹{{ expense | number:'1.0-0' }}</span>
+                <span class="donut__label">spent</span>
+              </div>
+            </div>
+
+            <ul class="legend">
+              <li *ngFor="let c of categories; trackBy: trackByName">
+                <span class="legend__swatch" [style.background]="c.color"></span>
+                <span class="legend__name">{{ c.emoji }} {{ c.name }}</span>
+                <span class="legend__amount">₹{{ c.amount | number:'1.0-0' }}</span>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Budget overview -->
+        <section class="card budget-card">
+          <h2 class="card__title">Budget overview</h2>
+
+          <ul class="budget-list">
+            <li *ngFor="let b of budgets; trackBy: trackByName">
+              <div class="budget-list__head">
+                <span>{{ b.name }}</span>
+                <span [class.over-text]="isOverBudget(b)">
+                  ₹{{ b.spent | number:'1.0-0' }} / ₹{{ b.limit | number:'1.0-0' }}
+                </span>
+              </div>
+              <div class="budget-bar">
+                <div
+                  class="budget-bar__fill"
+                  [class.over]="isOverBudget(b)"
+                  [style.width.%]="animateBars ? budgetPercent(b) : 0"
+                  [style.background]="isOverBudget(b) ? '#B04A2C' : b.color">
+                </div>
+              </div>
+            </li>
+          </ul>
+        </section>
+
+        <!-- Recent transactions -->
+        <section class="card transactions-card">
+          <div class="card__head-row">
+            <h2 class="card__title">Recent transactions</h2>
+            <button class="link-btn" type="button">View all</button>
+          </div>
+
+          <ul class="tx-list">
+            <li *ngFor="let t of transactions; trackBy: trackById" class="tx-row">
+              <span class="tx-icon" [class.tx-icon--income]="t.type === 'INCOME'">{{ t.category.icon || '💸' }}</span>
+              <div class="tx-info">
+                <span class="tx-name">{{ t.description }}</span>
+                <span class="tx-category">{{ t.category.name }} · {{ t.transactionDate | date:'mediumDate' }}</span>
+              </div>
+              <span class="tx-amount" [class.tx-amount--income]="t.type === 'INCOME'">
+                {{ t.type === 'INCOME' ? '+' : '−' }}₹{{ t.amount | number:'1.0-0' }}
+              </span>
+            </li>
+          </ul>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ============================== QUICK-ADD FAB ============================== -->
+  <div class="fab-wrap" (click)="$event.stopPropagation()">
+    <div class="fab-actions" *ngIf="fabOpen">
+      <button *ngFor="let a of fabActions" type="button" class="fab-action">
+        <span class="fab-action__icon">{{ a.icon }}</span>
+        <span class="fab-action__label">{{ a.label }}</span>
+      </button>
+    </div>
+    <button class="fab" type="button" [class.open]="fabOpen" (click)="toggleFab($event)" aria-label="Quick add">
+      <span></span>
+    </button>
+  </div>
+
+</div>
