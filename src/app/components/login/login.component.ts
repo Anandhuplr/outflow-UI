@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-
+import { environmentServer } from '../../../environments/environment';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -10,8 +10,7 @@ export class LoginComponent {
 
    loginWithGoogle(): void {
 
-    window.location.href =
-      'http://localhost:8080/oauth2/authorization/google';
+    window.location.href = environmentServer.SERVER_URL + '/oauth2/authorization/google';
   }
 }
 
