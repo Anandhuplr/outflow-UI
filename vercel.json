@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "outputDirectory": "dist/outFlow-UI",
+  "outputDirectory": "dist/outFlow-UI/browser",
   "cleanUrls": true,
   "rewrites": [
     {
